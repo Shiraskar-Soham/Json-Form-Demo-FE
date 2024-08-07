@@ -20,7 +20,7 @@ const ApiService = {
             .then((data) => {
                 //const managerNames = Object.keys(data);
                 const managerDisplayNames = Object.values(data);
-                return {managerDisplayNames };
+                return { managerDisplayNames };
             })
             .catch((error) => {
                 console.error('Error fetching systems:', error);
@@ -47,67 +47,26 @@ const ApiService = {
                 return [];
             });
     },
-    
-    getModules(company_name, system_name){
-        const url = new URL(`http://localhost:8081/api/v1/json/modules`);
-        url.search = new URLSearchParams({ company_name, system_name }).toString();
-      
+    getSystems(company_name) {
+        const url = new URL(`http://localhost:8081/api/v1/json/systems`);
+        url.search = new URLSearchParams({ company_name }).toString();
+
         return fetch(url, { method: 'GET' })
-          .then((res) => {
-            if (!res.ok) {
-              throw new Error(`HTTP error! status: ${res.status}`);
-            }
-            return res.json();
-          })
-          .then((data) => {
-            const enumNames = Object.keys(data);
-            const displayNames = Object.values(data);
-            return { enumNames, displayNames };
-          })
-          .catch((error) => {
-            console.error('Error fetching modules:', error);
-            return { enumNames: [], displayNames: [] };
-          })
-      }
-    // getSystems(company_name) {
-    //     const url = new URL(`http://localhost:8081/api/v1/json/systems`);
-    //     url.search = new URLSearchParams({ company_name }).toString();
-
-    //     return fetch(url, { method: 'GET' })
-    //         .then((res) => {
-    //             if (!res.ok) {
-    //                 throw new Error(`HTTP error! status: ${res.status}`);
-    //             }
-    //             return res.json();
-    //         })
-    //         .then((data) => {
-    //             return data;
-    //         })
-    //         .catch((error) => {
-    //             console.error('Error fetching modules:', error);
-    //             return [];
-    //         });
-    // },
-    // getRMS(emailID, approvingManager) {
-    //     const url = new URL(`http://localhost:8081/api/v1/json/getRMS`);
-    //     url.search = new URLSearchParams({ emailID, approvingManager}).toString();
-
-    //     return fetch(url, { method: 'GET' })
-    //         .then((res) => res.json())
-    //         .then((data) => {
-    //             const rmsDetails = {
-    //                 department: data['department'],
-    //                 subDepartment: data['subDepartment'],
-    //                 reportingManager: data['reportingManager']
-    //             };
-    //             return rmsDetails;
-    //         })
-    //         .catch((error) => {
-    //             console.error('Error fetching RMS:', error);
-    //             return { rmsDetails: [] };
-    //         });
-
-    // },
+            .then((res) => {
+                if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status}`);
+                }
+                return res.json();
+            })
+            .then((data) => {
+                // Convert the Map to an array of {enumName, displayName}
+                return Array.from(Object.entries(data)).map(([enumName, displayName]) => ({ enumName, displayName }));
+            })
+            .catch((error) => {
+                console.error('Error fetching systems:', error);
+                return [];
+            });
+    },
     // submitForm(data) {
     //     const formattedData = {
     //         emailId: data.emailId,
