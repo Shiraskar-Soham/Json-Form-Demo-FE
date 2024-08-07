@@ -67,36 +67,24 @@ const ApiService = {
                 return [];
             });
     },
-    // submitForm(data) {
-    //     const formattedData = {
-    //         emailId: data.emailId,
-    //         department: data.rmsDetails.department,
-    //         subDepartment: data.rmsDetails.subDepartment,
-    //         approvingManager: data.rmsDetails.reportingManager,
-    //         systemName: data.systemName.Systems,
-    //         modules: data.modules.Modules,
-    //         otherInput: data.otherInput
-    //     };
-
-    //     const url = new URL(`http://localhost:8081/api/v1/request/submit`);
-
-    //     return fetch(url, {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json'
-    //         },
-    //         body: JSON.stringify(formattedData)
-    //     })
-    //         .then((res) => res.json())
-    //         .then((responseData) => {
-    //             return responseData;
-    //         })
-    //         .catch((error) => {
-    //             console.error('Error submitting form:', error);
-    //             return { success: false, message: 'Error submitting form' };
-    //         });
-    // }
-
+    submitForm(data) {
+        const url = new URL(`http://localhost:8081/api/v1/request/submit`);
+        return fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then((res) => res.json())
+            .then((responseData) => {
+                return responseData;
+            })
+            .catch((error) => {
+                console.error('Error submitting form:', error);
+                return { success: false, message: 'Error submitting form' };
+            });
+    }
 
 };
 
