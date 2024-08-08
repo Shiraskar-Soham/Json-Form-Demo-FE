@@ -1,59 +1,52 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import ApiService from './Api';
+import './App.css'
 
-const Card = ({ title, id, buttons, data }) => {
-    return (
-      <div className="card">
-        <div className="card-header">
-          <span className="card-title">{title}</span>
-          <span className="card-id">{id}</span>
-          <div className="card-buttons">
-            {buttons.map((button, index) => (
-              <button key={index} className="card-button">
-                {button}
-              </button>
-            ))}
-          </div>
-        </div>
-        <div className="card-content">
-          <table>
-            <thead>
-              <tr>
-                {data[0].map((header, index) => (
-                  <th key={index}>{header}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {data.slice(1).map((row, rowIndex) => (
-                <tr key={rowIndex}>
-                  {row.map((cell, cellIndex) => (
-                    <td key={cellIndex}>{cell}</td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+const AccessRequestCard = ({ id, employeeName, subDepartment, companyName, emailId, approvingManagerName,
+  approvalStatus, controlTowerStatus, dateCreated, dateApproved, dateCompleted, modules,
+  employeeCompany, requestRemarks, approveRemarks, reviewRemarks
+}) => {
+  return (
+    <div className="card">
+      <div className="card-header">
+        <h2>{employeeName || "Employee Name"}</h2>
+        <p>{subDepartment} - {companyName}</p>
       </div>
-    );
-  };
-  
-  function App() {
-    const cardData = [
-      ['PO Number', 'PO Value', 'Ledger Balance', 'Order Amount', 'Supplier Quote', 'Product Margin'],
-      ['OFB/PO/B/24-25/AUG/MH/1', '1,17,99,999.882₹', '-60,00,000', '₹1,48,31,551', '1,18,00,000', '₹11,14,111 (8.86%)'],
-      // Add more rows as needed
-    ];
-  
-    return (
-      <div>
-        <Card
-          title="QFNSKWF"
-          id="OFB11722425997296"
-          buttons={['Audits', 'Preview PO', 'Reject', 'Approve']}
-          data={cardData}
-        />
+      <div className="card-content">
+        <p><strong>Email:</strong> {emailId}</p>
+        <p><strong>Approving Manager:</strong> {approvingManagerName || "N/A"}</p>
+        <p><strong>Approval Status:</strong> {approvalStatus}</p>
+        <p><strong>Control Tower Status:</strong> {controlTowerStatus}</p>
+        <p><strong>Date Created:</strong> {new Date(dateCreated).toLocaleDateString()}</p>
+        {/* <p><strong>Modules:</strong> {Object.keys(modules).join(', ')}</p> */}
+        <p><strong>Employee Company:</strong> {employeeCompany}</p>
+        <p><strong>Request Remarks:</strong> {requestRemarks || "None"}</p>
+        <p><strong>Approve Remarks:</strong> {approveRemarks || "None"}</p>
+        <p><strong>Review Remarks:</strong> {reviewRemarks || "None"}</p>
       </div>
-    );
-  }
-  export default App;
+    </div>
+  );
+};
+
+function App() {
+  const [listData, setListData] = useState([]);
+
+  useEffect(() => {
+    ApiService.getListing()
+      .then((responseData) => {
+        setListData(responseData);
+      })
+      .catch((error) => {
+        console.error('Error fetching access request list:', error);
+      });
+  }, []);
+
+  return (
+    <div>
+      {listData.map(item => (
+        <AccessRequestCard accessRequestData={item} />
+      ))}
+    </div>
+  );
+}
+export default App;

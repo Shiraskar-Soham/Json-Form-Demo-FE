@@ -145,7 +145,7 @@ function App() {
               "type": "string"
             },
             "uniqueItems": true,
-            "required" : ["$enumName"]
+            "required": ["$enumName"]
           };
         }
         setModulesSchema(newModulesSchema);
@@ -202,7 +202,7 @@ function App() {
   // const validate = (formData, errors) => {
   //   if (formData.company && Object.keys(modulesSchema).length > 0) {
   //     let atLeastOneModuleSelected = false;
-      
+
   //     for (const module in formData.modules) {
   //       if (formData.modules[module].length > 0) {
   //         atLeastOneModuleSelected = true;
@@ -230,7 +230,7 @@ function App() {
         onSubmit={onSubmit}
         showErrorList='top'
         onError={log('errors')}
-        // validate={validate}
+      // validate={validate}
       />
     </div>
   );
