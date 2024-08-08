@@ -10,6 +10,7 @@ function App() {
   const [data, setData] = useState({});
   const [managerDisplayNames, setManagerDisplayNames] = useState({});
   const [modulesSchema, setModulesSchema] = useState({});
+  const [backendError, setBackendError] = useState({})
 
   const baseSchema = {
     "title": "Request For Access",
@@ -143,10 +144,13 @@ function App() {
               "enum": displayNames,
               "type": "string"
             },
-            "uniqueItems": true
+            "uniqueItems": true,
+            "required" : ["$enumName"]
           };
         }
         setModulesSchema(newModulesSchema);
+      } else {
+        setModulesSchema({})
       }
     };
 
@@ -174,18 +178,44 @@ function App() {
     }
   };
 
-  const onSubmit = ({ formData }) => {
+  const onSubmit = ({ formData, errors }) => {
     ApiService.submitForm(formData)
       .then((responseData) => {
         const entryID = responseData;
-        alert(`Form Submitted Successfully! Your request Id is  "${entryID}".`);
+        alert(`Form Submitted Successfully! Your request Id is "${entryID}".`);
         setData({});
+        setBackendError('');
       })
       .catch((error) => {
         console.error('Form submission failed:', error);
-        alert('Form submission failed!');
+        setBackendError(error.message || 'Form submission failed!');
       });
   };
+  const onChange = ({ formData }) => {
+    if (formData?.company !== data?.company) {
+      formData.modules = {};
+    }
+    setData(formData);
+  };
+
+
+  // const validate = (formData, errors) => {
+  //   if (formData.company && Object.keys(modulesSchema).length > 0) {
+  //     let atLeastOneModuleSelected = false;
+      
+  //     for (const module in formData.modules) {
+  //       if (formData.modules[module].length > 0) {
+  //         atLeastOneModuleSelected = true;
+  //         break;
+  //       }
+  //     }
+
+  //     if (!atLeastOneModuleSelected) {
+  //       errors.modules.addError('At least one module must be selected.');
+  //     }
+  //   }
+  //   return errors;
+  // };
 
   const log = (type) => console.log.bind(console, type);
 
@@ -196,9 +226,11 @@ function App() {
         uiSchema={uiSchema}
         formData={data}
         validator={validator}
-        onChange={({ formData, errors }) => setData(formData)}
+        onChange={onChange}
         onSubmit={onSubmit}
+        showErrorList='top'
         onError={log('errors')}
+        // validate={validate}
       />
     </div>
   );

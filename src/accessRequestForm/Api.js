@@ -18,7 +18,6 @@ const ApiService = {
         return fetch(url, { method: 'GET' })
             .then((res) => res.json())
             .then((data) => {
-                //const managerNames = Object.keys(data);
                 const managerDisplayNames = Object.values(data);
                 return { managerDisplayNames };
             })
@@ -59,7 +58,6 @@ const ApiService = {
                 return res.json();
             })
             .then((data) => {
-                // Convert the Map to an array of {enumName, displayName}
                 return Array.from(Object.entries(data)).map(([enumName, displayName]) => ({ enumName, displayName }));
             })
             .catch((error) => {
@@ -76,14 +74,21 @@ const ApiService = {
             },
             body: JSON.stringify(data)
         })
-            .then((res) => res.json())
-            .then((responseData) => {
-                return responseData;
-            })
-            .catch((error) => {
-                console.error('Error submitting form:', error);
-                return { success: false, message: 'Error submitting form' };
-            });
+        .then((res) => {
+            if (!res.ok) {
+                return res.json().then((errorData) => {
+                    throw new Error(errorData.message);
+                });
+            }
+            return res.json();
+        })
+        .then((responseData) => {
+            return responseData;
+        })
+        .catch((error) => {
+            console.error('Error submitting form:', error);
+            throw error;
+        });
     }
 
 };
