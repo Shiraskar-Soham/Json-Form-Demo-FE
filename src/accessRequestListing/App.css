@@ -12,68 +12,59 @@
     transition: transform 0.3s, box-shadow 0.3s;
     font-size: 16px;
     display: block;
+}
 
-    .card-header {
-        border-bottom: 1px solid rgba(22, 9, 9, 0.2);
-        margin-bottom: 5px;
-        padding-bottom: 10px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-size: 18px;
+.card-header {
+    border-bottom: 1px solid rgba(22, 9, 9, 0.2);
+    margin-bottom: 5px;
+    padding-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 18px;
+}
 
-        .approvalButtons {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            align-items: center;
-            font-size: 18px;
+.approvalButtons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+}
 
-            .rejectButton {
-                background-color: #ff4d4d;
-                color: white;
-                padding: 10px 20px;
-                border: none;
-                border-radius: 5px;
-                cursor: pointer;
-                transition: background-color 0.3s ease;
-            }
+.rejectButton, .approveButton, .completeButton {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
 
-            .rejectButton:hover {
-                background-color: #e60000;
-                /* Darker red on hover */
-            }
+.rejectButton {
+    background-color: #ff4d4d;
+    color: white;
+}
 
-            .approveButton {
-                background-color: #4CAF50;
-                color: white;
-                padding: 10px 20px;
-                border: none;
-                border-radius: 5px;
-                cursor: pointer;
-                transition: background-color 0.3s ease;
-            }
+.rejectButton:hover {
+    background-color: #e60000;
+}
 
-            .approveButton:hover {
-                background-color: #45a049;
-            }
+.approveButton {
+    background-color: #4CAF50;
+    color: white;
+}
 
-            .completeButton {
-                background-color: #008CBA;
-                color: white;
-                padding: 10px 20px;
-                border: none;
-                border-radius: 5px;
-                cursor: pointer;
-                transition: background-color 0.3s ease;
-            }
+.approveButton:hover {
+    background-color: #45a049;
+}
 
-            .completeButton:hover {
-                background-color: #007bb5;
-            }
-        }
-    }
+.completeButton {
+    background-color: #008CBA;
+    color: white;
+}
 
+.completeButton:hover {
+    background-color: #007bb5;
 }
 
 .card:hover {
@@ -85,19 +76,62 @@
     margin: 12px 6px;
     font-size: 18px;
     color: #000000;
+}
 
-    .details-section {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 5px;
-        margin-bottom: 10px;
+.details-section, .full-width-content {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
 
+.modules-list {
+    margin-top: 10px;
+}
+
+.module-group {
+    margin-bottom: 5px;
+}
+
+@media screen and (max-width: 768px) {
+    .card {
+        margin-left: 2%;
+        margin-right: 2%;
+        padding: 8px;
+        font-size: 14px;
     }
 
-    .full-width-content {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 5px;
-        margin-bottom: 10px;
+    .card-header {
+        font-size: 16px;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .approvalButtons {
+        width: 100%;
+        gap: 5px;
+        flex-direction: column;
+    }
+
+    .rejectButton, .approveButton, .completeButton {
+        width: 100%;
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    .card-content {
+        margin: 8px 4px;
+        font-size: 16px;
+    }
+
+    .details-section, .full-width-content {
+        flex-direction: column;
+        justify-content: flex-start;
+        margin-top: 3px;
+        margin-bottom: 8px;
+    }
+
+    .details-section span, .full-width-content span {
+        margin-bottom: 5px;
     }
 }
