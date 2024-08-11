@@ -1,36 +1,106 @@
+p span {
+    margin-right: 10px;
+    /* Adjust the margin value as needed */
+}
+
 .card {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 16px;
-    margin: 16px 0;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    background-color: #fff;
+    border: 1px solid #000000;
+    border-radius: 12px;
+    padding: 10px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    margin-left: 5%;
+    margin-right: 5%;
+    background: rgb(255, 255, 255);
+    color: #000000;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
 }
 
 .card-header {
-    border-bottom: 1px solid #eee;
-    margin-bottom: 16px;
-    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(22, 9, 9, 0.2);
+    margin-bottom: 5px;
+    padding-bottom: 0px;
 }
 
 .card-header h2 {
-    font-size: 20px;
+    font-size: 22px;
     margin: 0;
-    color: #333;
+    color: #000000;
+    font-weight: 700;
 }
 
 .card-header p {
-    font-size: 14px;
-    color: #666;
+    font-size: 18px;
+    color: #000000;
 }
 
 .card-content p {
-    margin: 8px 0;
-    font-size: 14px;
-    color: #444;
+    margin: 12px 0;
+    font-size: 18px;
+    color: #000000;
 }
 
 .card-content p strong {
     font-weight: bold;
-    color: #333;
+    color: #020202;
+}
+
+.badgeWrapper {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 0 0 10px;
+    font-size: 8px;
+    color: #030303;
+
+}
+
+.managerApproval {
+    font-size: 18px;
+    height: 40px;
+    width: 100px;
+    background-color: rgb(0, 99, 138);
+    color: #ffffff;
+    border-radius: 3px;
+    margin-left: 1%;
+    margin-right: 1%;
+    border-width: 0.0005cm;
+}
+
+.towerApproval {
+    font-size: 18px;
+    height: 40px;
+    width: 200px;
+    background-color: rgb(10, 165, 93);
+    color: #ffffff;
+    border-radius: 3px;
+    margin-left: 1%;
+    margin-right: 1%;
+    border-width: 0.0005cm;
+}
+
+.modules-list {
+    font-size: 15px;
+}
+
+.approvalButtons {
+    margin-left: 20%;
+}
+
+.managerReject {
+    font-size: 18px;
+    height: 40px;
+    width: 100px;
+    background-color:#ffffff;
+    color: rgb(0, 99, 138);
+    border-radius: 3px;
+    margin-left: 1%;
+    margin-right: 1%;
+    border-width: 0.0005cm;
 }
