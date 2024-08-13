@@ -32,7 +32,9 @@
     font-size: 18px;
 }
 
-.rejectButton, .approveButton, .completeButton {
+.rejectButton,
+.approveButton,
+.completeButton {
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
@@ -78,7 +80,8 @@
     color: #000000;
 }
 
-.details-section, .full-width-content {
+.details-section,
+.full-width-content {
     display: flex;
     justify-content: space-between;
     margin-top: 5px;
@@ -91,6 +94,30 @@
 
 .module-group {
     margin-bottom: 5px;
+}
+
+.remarks-text {
+    font-size: 16px;
+}
+
+.remarks-input button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.remarks-text {
+    width: 100%;
+    height: 100px;
+    padding: 10px;
+    border: 1px solid #e40a0a;
+    border-radius: 4px;
+    font-size: 16px;
+    resize: vertical;
+    box-sizing: border-box;
+
 }
 
 @media screen and (max-width: 768px) {
@@ -113,7 +140,9 @@
         flex-direction: column;
     }
 
-    .rejectButton, .approveButton, .completeButton {
+    .rejectButton,
+    .approveButton,
+    .completeButton {
         width: 100%;
         padding: 8px;
         font-size: 14px;
@@ -124,14 +153,16 @@
         font-size: 16px;
     }
 
-    .details-section, .full-width-content {
+    .details-section,
+    .full-width-content {
         flex-direction: column;
         justify-content: flex-start;
         margin-top: 3px;
         margin-bottom: 8px;
     }
 
-    .details-section span, .full-width-content span {
+    .details-section span,
+    .full-width-content span {
         margin-bottom: 5px;
     }
 }
