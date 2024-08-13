@@ -4,7 +4,7 @@ import validator from '@rjsf/validator-ajv8';
 import { useEffect, useState } from 'react';
 import ApiService from './Api';
 
-function App() {
+function AccessRequestForm() {
   const [companyNames, setCompanyNames] = useState([]);
   const [companyDisplayNames, setCompanyDisplayNames] = useState([]);
   const [data, setData] = useState({});
@@ -236,4 +236,4 @@ function App() {
   );
 }
 
-export default App;
+export default AccessRequestForm;

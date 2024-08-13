@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import ApiService from './Api';
 import './App.css'
+import { useNavigate } from 'react-router-dom';
 
 function reject(id, reviewRemarks) {
   ApiService.reject(id, reviewRemarks);
@@ -14,9 +15,13 @@ function towerApproval(id, status, reviewRemarks) {
   ApiService.towerApproval(id, status, reviewRemarks);
 }
 
-function App() {
+function AccessRequestListing() {
   const [listData, setListData] = useState([]);
+  const navigate = useNavigate();
 
+  const handleButtonClick = () => {
+    navigate('/newRequest');
+  };
   useEffect(() => {
     ApiService.getListing()
       .then((responseData) => {
@@ -183,10 +188,14 @@ function App() {
 
   return (
     <div>
+      <div className='pageHeader'>
+        <div>Access Request Listing</div>
+        <div><button className='newButton' onClick={handleButtonClick}>Raise New Request</button></div>
+      </div>
       {listData.map(item => (
         <AccessRequestCard key={item.id} accessRequestData={item} />
       ))}
     </div>
   );
 }
-export default App;
+export default AccessRequestListing;
