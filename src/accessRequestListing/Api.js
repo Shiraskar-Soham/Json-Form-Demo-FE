@@ -36,8 +36,7 @@ const ApiService = {
             console.error('Error rejecting request:', error);
             return [];
         });
-    }
-    ,
+    },
     
     approve(id, reviewRemarks) {
         const url = `http://localhost:8081/api/v1/request/status?id=${id}&action=APPROVED&remarks=${encodeURIComponent(reviewRemarks)}`;
