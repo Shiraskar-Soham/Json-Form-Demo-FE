@@ -15,15 +15,16 @@ function towerApproval(id, status, reviewRemarks) {
   ApiService.towerApproval(id, status, reviewRemarks);
 }
 
-function AccessRequestListing() {
+function AccessRequestListing({listingStatus}) {
   const [listData, setListData] = useState([]);
   const navigate = useNavigate();
 
   const handleButtonClick = () => {
     navigate('/newRequest');
   };
+
   useEffect(() => {
-    ApiService.getListing()
+    ApiService.getListing(listingStatus)
       .then((responseData) => {
         setListData(responseData);
       })

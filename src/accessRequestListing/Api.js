@@ -1,6 +1,9 @@
 const ApiService = {
-    getListing() {
-        const url = `http://localhost:8081/api/v1/request/getAccessRequestListings`;
+    getListing(listingStatus) {
+        let url = `http://localhost:8081/api/v1/request/getAccessRequestListings`;
+        if (listingStatus !== 'ALL') {
+            url = url + `?listingStatus=${encodeURIComponent(listingStatus)}`
+        }
         return fetch(url, { method: 'GET' })
             .then((res) => res.json())
             .then((data) => {
