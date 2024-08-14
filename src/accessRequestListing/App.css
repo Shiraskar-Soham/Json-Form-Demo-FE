@@ -17,6 +17,13 @@
         color: white;
         margin-top: 20px;
     }
+
+    .filterButtons {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+    }
 }
 
 .card {

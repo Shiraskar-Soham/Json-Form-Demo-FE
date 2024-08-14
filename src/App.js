@@ -9,6 +9,10 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<AccessRequestListing />} />
+        <Route path="/allApproved" element={<AccessRequestListing />} />
+        <Route path="/allRejected" element={<AccessRequestListing />} />
+        <Route path="/allCompleted" element={<AccessRequestListing />} />
+        <Route path="/allPending" element={<AccessRequestListing />} />
         <Route path="/newRequest" element={<AccessRequestForm />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

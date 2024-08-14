@@ -191,6 +191,13 @@ function AccessRequestListing() {
       <div className='pageHeader'>
         <div>Access Request Listing</div>
         <div><button className='newButton' onClick={handleButtonClick}>Raise New Request</button></div>
+        <div className='filterButtons'>
+          <button className='newButton' onClick={() => navigate('/')}>All</button>
+          <button className='newButton' onClick={() => navigate('/allPending')}>Pending</button>
+          <button className='newButton' onClick={() => navigate('/allRejected')}>Rejected</button>
+          <button className='newButton' onClick={() => navigate('/allApproved')}>Approved</button>
+          <button className='newButton' onClick={() => navigate('/allCompleted')}>Completed</button>
+        </div>
       </div>
       {listData.map(item => (
         <AccessRequestCard key={item.id} accessRequestData={item} />
