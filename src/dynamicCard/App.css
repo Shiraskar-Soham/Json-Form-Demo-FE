@@ -8,14 +8,26 @@
   .card-header {
     display: flex;
     font-size: large;
-    flex-direction: row;
-    justify-content: flex-start;
+    justify-content: space-between;
   }
 
   .chips-container {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
+
+    .chip {
+      background-color: #c6eeee;
+      color: rgb(3, 58, 58);
+      border-radius: 14px;
+      padding: 8px 8px;
+      font-size: 12px;
+      display: inline-block;
+    }
+
+    .chip strong {
+      font-weight: bold;
+    }
   }
 
   .approvalButtons {
@@ -24,78 +36,56 @@
     justify-content: space-around;
     align-items: center;
     font-size: 18px;
-  }
 
-  .chip {
-    background-color: #c6eeee;
-    color: rgb(3, 58, 58);
-    border-radius: 14px;
-    padding: 8px 8px;
-    font-size: 12px;
-    display: inline-block;
-  }
+    .rejectButton,
+    .approveButton,
+    .completeButton {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
 
-  .rejectButton,
-  .approveButton,
-  .completeButton {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
+    .rejectButton {
+      background-color: #ff4d4d;
+      color: white;
+    }
 
-  .rejectButton {
-    background-color: #ff4d4d;
-    color: white;
-  }
+    .rejectButton:hover {
+      background-color: #e60000;
+    }
 
-  .rejectButton:hover {
-    background-color: #e60000;
-  }
+    .approveButton {
+      background-color: #4CAF50;
+      color: white;
+    }
 
-  .approveButton {
-    background-color: #4CAF50;
-    color: white;
-  }
+    .approveButton:hover {
+      background-color: #45a049;
+    }
 
-  .approveButton:hover {
-    background-color: #45a049;
-  }
+    .completeButton {
+      background-color: #008CBA;
+      color: white;
+    }
 
-  .completeButton {
-    background-color: #008CBA;
-    color: white;
-  }
-
-  .completeButton:hover {
-    background-color: #007bb5;
-  }
-
-  /* .module-chips{
-      background-color: rgb(243, 243, 196);
-      color: rgb(57, 58, 3);
-      border-radius: 16px;
-      padding: 8px 8px;
-      font-size: 16px;
-      display: inline-block;
-  
-    } */
-
-  .chip strong {
-    font-weight: bold;
+    .completeButton:hover {
+      background-color: #007bb5;
+    }
   }
 
   .card-body {
     display: flex;
     flex-direction: column;
-    list-style-type: disc;
-    justify-content: last baseline;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    gap : 15px;
   }
 
   .card-footer {
     display: flex;
-    flex-direction: row;
-    justify-content: left;
+    justify-content: flex-start;
+    gap: 20px;
   }
 }
