@@ -89,3 +89,13 @@
     gap: 20px;
   }
 }
+
+.pageHeader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 25px;
+  margin-top: 20px;
+  font-weight: 700;
+  flex-direction: column;
+}
