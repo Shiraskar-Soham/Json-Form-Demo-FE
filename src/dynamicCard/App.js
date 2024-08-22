@@ -1,37 +1,41 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import ApiService from './Api.js';
 import './App.css';
 
-const jsonData = {
-  "header": {
-    "Employee Name": "Soham",
-    "Department": "Technology",
-    "Sub Dept": "Development",
-    "Company Name": "Ofbusiness"
-  },
-  "labelChips": {
-    "Date Created": "07/08/2024",
-    "Email Id": "soham.shiraskar@ofbusiness.in",
-    "Manager Status": "Approved",
-    "Control Tower Status": "Pending"
-  },
-  "body": {
-    "Oasys": ["RFQ", "Accounts"],
-    "OFB Sales": ["Invoice", "Finance"]
-  },
-  "footer": {
-    "Remarks": "View access for the modules",
-    "Date Approved": "09/08/2024",
-    "Approving Remarks": "Please give edit and view access"
-  }
-};
+function App({ jsonData }) {
 
-function App() {
+  if (!jsonData || !jsonData.header) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="card">
       <HeaderSection header={jsonData.header} />
       <LabelChipsSection labelChips={jsonData.labelChips} />
       <BodySection body={jsonData.body} />
       <FooterSection footer={jsonData.footer} />
+    </div>
+  );
+}
+
+function AppListing() {
+  const [listingData, setListingData] = useState([]);
+
+  useEffect(() => {
+
+    ApiService.getListing()
+      .then((responseData) => {
+        setListingData(responseData);
+      })
+      .catch((error) => {
+        console.error('Error in useEffect:', error);
+      });
+  }, []);
+  return (
+    <div className="app-listing">
+      {listingData.map((data, index) => (
+        <App jsonData={data} />
+      ))}
     </div>
   );
 }
@@ -98,13 +102,13 @@ function BodySection({ body }) {
 function FooterSection({ footer }) {
   return (
     <div className="card-footer">
-        {Object.keys(footer).map((key) => (
-          <span key={key}>
-            <strong>{key}:</strong> {footer[key]}{('   ')}{ }
-          </span>
-        ))}
+      {Object.keys(footer).map((key) => (
+        <span key={key}>
+          <strong>{key}:</strong> {footer[key]}{('   ')}{ }
+        </span>
+      ))}
     </div>
   );
 }
 
-export default App;
+export default AppListing;
