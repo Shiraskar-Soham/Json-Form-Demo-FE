@@ -185,13 +185,13 @@ function AppListing() {
     resetCardState,
   }) => {
     const textareaRef = useRef(null);
-  
+
     useEffect(() => {
       if (card.showRemarksInput && textareaRef.current) {
         textareaRef.current.focus();
       }
     }, [card.showRemarksInput]);
-  
+
     return (
       <>
         <div className="card-footer">
@@ -210,7 +210,6 @@ function AppListing() {
                 value={card.remarks || ''}
                 onChange={(event) => handleInputChange(event, jsonData.id)}
                 placeholder="Enter your remarks here"
-                key={`remarks-${jsonData.id}`}
               />
             </div>
             <div className="approvalButtons">
@@ -249,7 +248,7 @@ function AppListing() {
         )}
       </>
     );
-  };  
+  };
 
   return (
     <>
