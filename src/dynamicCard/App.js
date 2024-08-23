@@ -1,9 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import ApiService from './Api.js';
 import './App.css';
-import { json } from 'react-router-dom';
-// import { useNavigate } from 'react-router-dom';
-
 
 function reject(id, reviewRemarks) {
   ApiService.reject(id, reviewRemarks);
@@ -18,7 +15,6 @@ function towerApproval(id, status, reviewRemarks) {
 }
 
 function AppListing() {
-
   useEffect(() => {
     ApiService.getListing()
       .then((responseData) => {
@@ -30,41 +26,34 @@ function AppListing() {
   }, []);
 
   const [listingData, setListingData] = useState([]);
-  const [showRemarksInput, setShowRemarksInput] = useState(false);
-  const [isCTFlow, setIsCTFLow] = useState(false);
-  const [isManagerFlow, setIsManagerFlow] = useState(false);
-  const [remarks, setRemarks] = useState('');
-  const [actionType, setActionType] = useState('');
+  const [cardState, setCardState] = useState({});
 
-  // const navigate = useNavigate();
-  // const handleButtonClick = () => {
-  //   navigate('/newRequest');
-  // };
+  const handleActionClick = useCallback((action, id) => {
+    setCardState((prevState) => ({
+      ...prevState,
+      [id]: {
+        ...prevState[id],
+        actionType: action,
+        showRemarksInput: true,
+        isCTFlow: action === 'COMPLETE',
+        isManagerFlow: action !== 'COMPLETE',
+      },
+    }));
+  }, []);
 
-  const handleActionClick = (action) => {
-    setActionType(action);
-    setShowRemarksInput(true);
-    if (action === 'COMPLETE') {
-      setIsCTFLow(true); setIsManagerFlow(false);
-    } else {
-      setIsManagerFlow(true); setIsCTFLow(false);
-    }
-  };
-
-  const handleCompleteRemarks = (choice, id) => {
+  const handleCompleteRemarks = useCallback((choice, id) => {
+    const remarks = cardState[id]?.remarks || '';
     if (choice === 'APPROVED') {
       towerApproval(id, 'APPROVED', remarks);
     } else {
       towerApproval(id, 'REJECTED', remarks);
     }
-    setShowRemarksInput(false);
-    setRemarks('');
-    setActionType('');
-    setIsCTFLow(false);
-    setIsManagerFlow(false);
-  }
+    resetCardState(id);
+  }, [cardState]);
 
-  const handleSubmitRemarks = (id) => {
+  const handleSubmitRemarks = useCallback((id) => {
+    const actionType = cardState[id]?.actionType;
+    const remarks = cardState[id]?.remarks || '';
     switch (actionType) {
       case 'REJECT':
         reject(id, remarks);
@@ -75,66 +64,90 @@ function AppListing() {
       default:
         break;
     }
-    setShowRemarksInput(false);
-    setRemarks('');
-    setActionType('');
-    setIsCTFLow(false);
-    setIsManagerFlow(false);
-  };
+    resetCardState(id);
+  }, [cardState]);
 
-  const handleInputChange = (event) => {
-    setRemarks(event.target.value);
-  };
+  const handleInputChange = useCallback((event, id) => {
+    const { value } = event.target;
+    setCardState((prevState) => ({
+      ...prevState,
+      [id]: {
+        ...prevState[id],
+        remarks: value,
+      },
+    }));
+  }, []);
 
+  const resetCardState = useCallback((id) => {
+    setCardState((prevState) => ({
+      ...prevState,
+      [id]: {
+        showRemarksInput: false,
+        remarks: '',
+        actionType: '',
+        isCTFlow: false,
+        isManagerFlow: false,
+      },
+    }));
+  }, []);
 
-  const App = ({ jsonData }) => {
+  const App = React.memo(({ jsonData }) => {
+    const card = cardState[jsonData.id] || {};
     if (!jsonData || !jsonData.header) {
       return <div>Loading...</div>;
     }
     return (
       <div className="card">
-        <HeaderSection jsonData={jsonData} />
+        <HeaderSection
+          jsonData={jsonData}
+          handleActionClick={handleActionClick}
+        />
         <LabelChipsSection labelChips={jsonData.labelChips} />
         <BodySection body={jsonData.body} />
-        <FooterSection jsonData={jsonData} />
+        <FooterSection
+          jsonData={jsonData}
+          card={card}
+          handleInputChange={handleInputChange}
+          handleCompleteRemarks={handleCompleteRemarks}
+          handleSubmitRemarks={handleSubmitRemarks}
+          resetCardState={resetCardState}
+        />
       </div>
     );
-  }
+  });
 
-  const HeaderSection = ({ jsonData }) => {
+  const HeaderSection = React.memo(({ jsonData, handleActionClick }) => {
     return (
       <div className="card-header">
-        <h3>
-          {Object.values(jsonData?.header).join(' | ')}
-        </h3>
-        <div className='approvalButtons'>
+        <h3>{Object.values(jsonData?.header).join(' | ')}</h3>
+        <div className="approvalButtons">
           <button
             className="rejectButton"
-            onClick={() => handleActionClick('REJECT')}
-            hidden={jsonData?.labelChips["Manager Status"] !== 'PENDING'}
+            onClick={() => handleActionClick('REJECT', jsonData.id)}
+            hidden={jsonData?.labelChips['Manager Status'] !== 'PENDING'}
           >
             Reject
           </button>
           <button
             className="approveButton"
-            onClick={() => handleActionClick('APPROVE')}
-            hidden={jsonData?.labelChips["Manager Status"] !== 'PENDING'}
+            onClick={() => handleActionClick('APPROVE', jsonData.id)}
+            hidden={jsonData?.labelChips['Manager Status'] !== 'PENDING'}
           >
             Approve
           </button>
           <button
             className="completeButton"
-            onClick={() => handleActionClick('COMPLETE')}
-            hidden={jsonData?.labelChips["Control Tower Status"] !== 'PENDING'}
+            onClick={() => handleActionClick('COMPLETE', jsonData.id)}
+            hidden={jsonData?.labelChips['Control Tower Status'] !== 'PENDING'}
           >
             Mark As Completed
           </button>
         </div>
       </div>
     );
-  }
+  });
 
-  const LabelChipsSection = ({ labelChips }) => {
+  const LabelChipsSection = React.memo(({ labelChips }) => {
     return (
       <div className="card-labelChips">
         <div className="chips-container">
@@ -146,69 +159,106 @@ function AppListing() {
         </div>
       </div>
     );
-  }
+  });
 
-  const BodySection = ({ body }) => {
+  const BodySection = React.memo(({ body }) => {
     return (
       <div className="card-body">
         {Object.keys(body).map((key) => (
           <div key={key}>
-            <span className="module-chips"><strong>{key}{': '}</strong>{body[key].join(', ')}</span>
+            <span className="module-chips">
+              <strong>{key}{': '}</strong>
+              {body[key].join(', ')}
+            </span>
           </div>
         ))}
       </div>
     );
-  }
+  });
 
-  const FooterSection = ({ jsonData }) => {
+  const FooterSection = React.memo(({
+    jsonData,
+    card,
+    handleInputChange,
+    handleCompleteRemarks,
+    handleSubmitRemarks,
+    resetCardState,
+  }) => {
+    const textareaRef = useRef(null);
+  
+    useEffect(() => {
+      if (card.showRemarksInput && textareaRef.current) {
+        textareaRef.current.focus();
+      }
+    }, [card.showRemarksInput]);
+  
     return (
       <>
         <div className="card-footer">
           {Object.keys(jsonData?.footer).map((key) => (
             <span key={key}>
-              <strong>{key}:</strong> {jsonData?.footer[key]}{('   ')}{ }
+              <strong>{key}:</strong> {jsonData?.footer[key]}{'   '}{' '}
             </span>
           ))}
         </div>
-        <>
-          {showRemarksInput && (
-            <>
-              <div className="remarks-input">
-                <textarea className="remarks-text"
-                  value={remarks}
-                  onChange={handleInputChange}
-                  placeholder="Enter your remarks here"
-                />
-              </div>
-              <div className='approvalButtons'>
-                {isCTFlow && !isManagerFlow && <button className='approveButton' onClick={() => handleCompleteRemarks('APPROVED', jsonData?.id)} >Approve</button>}
-                {isCTFlow && !isManagerFlow && <button className='completeButton' onClick={() => handleCompleteRemarks('REJECTED', jsonData?.id)} >Reject</button>}
-                {isManagerFlow && !isCTFlow && <button className='completeButton' onClick={() => handleSubmitRemarks(jsonData?.id)} >Submit</button>}
-                <button className='rejectButton' onClick={() => (setShowRemarksInput(false), setIsCTFLow(false), setIsManagerFlow(false))}>Cancel</button>
-              </div>
-            </>
-          )}
-        </>
+        {card.showRemarksInput && (
+          <>
+            <div className="remarks-input">
+              <textarea
+                className="remarks-text"
+                ref={textareaRef}
+                value={card.remarks || ''}
+                onChange={(event) => handleInputChange(event, jsonData.id)}
+                placeholder="Enter your remarks here"
+              />
+            </div>
+            <div className="approvalButtons">
+              {card.isCTFlow && !card.isManagerFlow && (
+                <button
+                  className="approveButton"
+                  onClick={() => handleCompleteRemarks('APPROVED', jsonData.id)}
+                >
+                  Approve
+                </button>
+              )}
+              {card.isCTFlow && !card.isManagerFlow && (
+                <button
+                  className="completeButton"
+                  onClick={() => handleCompleteRemarks('REJECTED', jsonData.id)}
+                >
+                  Reject
+                </button>
+              )}
+              {card.isManagerFlow && !card.isCTFlow && (
+                <button
+                  className="completeButton"
+                  onClick={() => handleSubmitRemarks(jsonData.id)}
+                >
+                  Submit
+                </button>
+              )}
+              <button
+                className="rejectButton"
+                onClick={() => resetCardState(jsonData.id)}
+              >
+                Cancel
+              </button>
+            </div>
+          </>
+        )}
       </>
     );
-  }
+  });
+  
 
   return (
     <>
-      <div className='pageHeader'>
+      <div className="pageHeader">
         <div>Access Request Listing</div>
-        {/* <div><button className='newButton' onClick={handleButtonClick}>Raise New Request</button></div>
-        <div className='filterButtons'>
-          <button className='newButton' onClick={() => navigate('/')}>All</button>
-          <button className='newButton' onClick={() => navigate('/allPending')}>Pending</button>
-          <button className='newButton' onClick={() => navigate('/allRejected')}>Rejected</button>
-          <button className='newButton' onClick={() => navigate('/allApproved')}>Approved</button>
-          <button className='newButton' onClick={() => navigate('/allCompleted')}>Completed</button>
-        </div> */}
       </div>
       <div className="app-listing">
-        {listingData.map((data, index) => (
-          <App jsonData={data} />
+        {listingData.map((data) => (
+          <App key={data.id} jsonData={data} />
         ))}
       </div>
     </>
