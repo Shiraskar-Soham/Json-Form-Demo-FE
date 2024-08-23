@@ -107,7 +107,6 @@ function AppListing() {
         <FooterSection
           jsonData={jsonData}
           card={card}
-          handleInputChange={handleInputChange}
           handleCompleteRemarks={handleCompleteRemarks}
           handleSubmitRemarks={handleSubmitRemarks}
           resetCardState={resetCardState}
@@ -176,22 +175,20 @@ function AppListing() {
     );
   };
 
-  const FooterSection = ({
-    jsonData,
-    card,
-    handleInputChange,
-    handleCompleteRemarks,
-    handleSubmitRemarks,
-    resetCardState,
-  }) => {
+  const FooterSection = ({ jsonData, card, handleCompleteRemarks, handleSubmitRemarks, resetCardState }) => {
+    const [remarks, setRemarks] = useState('');
     const textareaRef = useRef(null);
-
+  
     useEffect(() => {
-      if (card.showRemarksInput && textareaRef.current) {
+      if (textareaRef.current && remarks !== '') {
         textareaRef.current.focus();
       }
-    }, [card.showRemarksInput]);
-
+    }, [remarks]);
+  
+    const handleInputChange = (event) => {
+      setRemarks(event.target.value);
+    };
+  
     return (
       <>
         <div className="card-footer">
@@ -202,16 +199,14 @@ function AppListing() {
           ))}
         </div>
         {card.showRemarksInput && (
-          <>
-            <div className="remarks-input">
-              <textarea
-                className="remarks-text"
-                ref={textareaRef}
-                value={card.remarks || ''}
-                onChange={(event) => handleInputChange(event, jsonData.id)}
-                placeholder="Enter your remarks here"
-              />
-            </div>
+          <div className="remarks-input">
+            <textarea
+              className="remarks-text"
+              ref={textareaRef}
+              value={remarks}
+              onChange={handleInputChange}
+              placeholder="Enter your remarks here"
+            />
             <div className="approvalButtons">
               {card.isCTFlow && !card.isManagerFlow && (
                 <button
@@ -244,7 +239,7 @@ function AppListing() {
                 Cancel
               </button>
             </div>
-          </>
+          </div>
         )}
       </>
     );
