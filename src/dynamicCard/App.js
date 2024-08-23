@@ -15,9 +15,6 @@ function towerApproval(id, status, reviewRemarks) {
 }
 
 function AppListing() {
-  const [listingData, setListingData] = useState([]);
-  const [cardState, setCardState] = useState({});
-
   useEffect(() => {
     ApiService.getListing()
       .then((responseData) => {
@@ -27,6 +24,9 @@ function AppListing() {
         console.error('Error in useEffect:', error);
       });
   }, []);
+
+  const [listingData, setListingData] = useState([]);
+  const [cardState, setCardState] = useState({});
 
   const handleActionClick = useCallback((action, id) => {
     setCardState((prevState) => ({
@@ -41,37 +41,31 @@ function AppListing() {
     }));
   }, []);
 
-  const handleCompleteRemarks = useCallback(
-    (choice, id) => {
-      const remarks = cardState[id]?.remarks || '';
-      if (choice === 'APPROVED') {
-        towerApproval(id, 'APPROVED', remarks);
-      } else {
-        towerApproval(id, 'REJECTED', remarks);
-      }
-      resetCardState(id);
-    },
-    [cardState]
-  );
+  const handleCompleteRemarks = useCallback((choice, id) => {
+    const remarks = cardState[id]?.remarks || '';
+    if (choice === 'APPROVED') {
+      towerApproval(id, 'APPROVED', remarks);
+    } else {
+      towerApproval(id, 'REJECTED', remarks);
+    }
+    resetCardState(id);
+  }, [cardState]);
 
-  const handleSubmitRemarks = useCallback(
-    (id) => {
-      const actionType = cardState[id]?.actionType;
-      const remarks = cardState[id]?.remarks || '';
-      switch (actionType) {
-        case 'REJECT':
-          reject(id, remarks);
-          break;
-        case 'APPROVE':
-          approve(id, remarks);
-          break;
-        default:
-          break;
-      }
-      resetCardState(id);
-    },
-    [cardState]
-  );
+  const handleSubmitRemarks = useCallback((id) => {
+    const actionType = cardState[id]?.actionType;
+    const remarks = cardState[id]?.remarks || '';
+    switch (actionType) {
+      case 'REJECT':
+        reject(id, remarks);
+        break;
+      case 'APPROVE':
+        approve(id, remarks);
+        break;
+      default:
+        break;
+    }
+    resetCardState(id);
+  }, [cardState]);
 
   const handleInputChange = useCallback((event, id) => {
     const { value } = event.target;
@@ -104,7 +98,10 @@ function AppListing() {
     }
     return (
       <div className="card">
-        <HeaderSection jsonData={jsonData} handleActionClick={handleActionClick} />
+        <HeaderSection
+          jsonData={jsonData}
+          handleActionClick={handleActionClick}
+        />
         <LabelChipsSection labelChips={jsonData.labelChips} />
         <BodySection body={jsonData.body} />
         <FooterSection
@@ -179,81 +176,80 @@ function AppListing() {
     );
   });
 
-  const FooterSection = React.memo(
-    ({
-      jsonData,
-      card,
-      handleInputChange,
-      handleCompleteRemarks,
-      handleSubmitRemarks,
-      resetCardState,
-    }) => {
-      const textareaRef = useRef(null);
-
-      useEffect(() => {
-        if (card.showRemarksInput && textareaRef.current) {
-          textareaRef.current.focus();
-        }
-      }, [card.showRemarksInput]);
-
-      return (
-        <>
-          <div className="card-footer">
-            {Object.keys(jsonData?.footer).map((key) => (
-              <span key={key}>
-                <strong>{key}:</strong> {jsonData?.footer[key]}{'   '}{' '}
-              </span>
-            ))}
-          </div>
-          {card.showRemarksInput && (
-            <>
-              <div className="remarks-input">
-                <textarea
-                  className="remarks-text"
-                  ref={textareaRef}
-                  value={card.remarks || ''}
-                  onChange={(event) => handleInputChange(event, jsonData.id)}
-                  placeholder="Enter your remarks here"
-                />
-              </div>
-              <div className="approvalButtons">
-                {card.isCTFlow && !card.isManagerFlow && (
-                  <button
-                    className="approveButton"
-                    onClick={() => handleCompleteRemarks('APPROVED', jsonData.id)}
-                  >
-                    Approve
-                  </button>
-                )}
-                {card.isCTFlow && !card.isManagerFlow && (
-                  <button
-                    className="completeButton"
-                    onClick={() => handleCompleteRemarks('REJECTED', jsonData.id)}
-                  >
-                    Reject
-                  </button>
-                )}
-                {card.isManagerFlow && !card.isCTFlow && (
-                  <button
-                    className="completeButton"
-                    onClick={() => handleSubmitRemarks(jsonData.id)}
-                  >
-                    Submit
-                  </button>
-                )}
+  const FooterSection = React.memo(({
+    jsonData,
+    card,
+    handleInputChange,
+    handleCompleteRemarks,
+    handleSubmitRemarks,
+    resetCardState,
+  }) => {
+    const textareaRef = useRef(null);
+  
+    useEffect(() => {
+      if (card.showRemarksInput && textareaRef.current) {
+        textareaRef.current.focus();
+      }
+    }, [card.showRemarksInput]);
+  
+    return (
+      <>
+        <div className="card-footer">
+          {Object.keys(jsonData?.footer).map((key) => (
+            <span key={key}>
+              <strong>{key}:</strong> {jsonData?.footer[key]}{'   '}{' '}
+            </span>
+          ))}
+        </div>
+        {card.showRemarksInput && (
+          <>
+            <div className="remarks-input">
+              <textarea
+                className="remarks-text"
+                ref={textareaRef}
+                value={card.remarks || ''}
+                onChange={(event) => handleInputChange(event, jsonData.id)}
+                placeholder="Enter your remarks here"
+              />
+            </div>
+            <div className="approvalButtons">
+              {card.isCTFlow && !card.isManagerFlow && (
                 <button
-                  className="rejectButton"
-                  onClick={() => resetCardState(jsonData.id)}
+                  className="approveButton"
+                  onClick={() => handleCompleteRemarks('APPROVED', jsonData.id)}
                 >
-                  Cancel
+                  Approve
                 </button>
-              </div>
-            </>
-          )}
-        </>
-      );
-    }
-  );
+              )}
+              {card.isCTFlow && !card.isManagerFlow && (
+                <button
+                  className="completeButton"
+                  onClick={() => handleCompleteRemarks('REJECTED', jsonData.id)}
+                >
+                  Reject
+                </button>
+              )}
+              {card.isManagerFlow && !card.isCTFlow && (
+                <button
+                  className="completeButton"
+                  onClick={() => handleSubmitRemarks(jsonData.id)}
+                >
+                  Submit
+                </button>
+              )}
+              <button
+                className="rejectButton"
+                onClick={() => resetCardState(jsonData.id)}
+              >
+                Cancel
+              </button>
+            </div>
+          </>
+        )}
+      </>
+    );
+  });
+  
 
   return (
     <>
