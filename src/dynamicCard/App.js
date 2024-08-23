@@ -210,7 +210,7 @@ function AppListing() {
                 value={card.remarks || ''}
                 onChange={(event) => handleInputChange(event, jsonData.id)}
                 placeholder="Enter your remarks here"
-                key={`remarks-${jsonData.id}`} // Ensure the key attribute is unique
+                key={`remarks-${jsonData.id}`}
               />
             </div>
             <div className="approvalButtons">
