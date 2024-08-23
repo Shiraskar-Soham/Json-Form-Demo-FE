@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import ApiService from './Api.js';
 import './App.css';
 
@@ -15,6 +15,9 @@ function towerApproval(id, status, reviewRemarks) {
 }
 
 function AppListing() {
+  const [listingData, setListingData] = useState([]);
+  const [cardState, setCardState] = useState({});
+
   useEffect(() => {
     ApiService.getListing()
       .then((responseData) => {
@@ -25,10 +28,7 @@ function AppListing() {
       });
   }, []);
 
-  const [listingData, setListingData] = useState([]);
-  const [cardState, setCardState] = useState({});
-
-  const handleActionClick = useCallback((action, id) => {
+  const handleActionClick = (action, id) => {
     setCardState((prevState) => ({
       ...prevState,
       [id]: {
@@ -39,9 +39,9 @@ function AppListing() {
         isManagerFlow: action !== 'COMPLETE',
       },
     }));
-  }, []);
+  };
 
-  const handleCompleteRemarks = useCallback((choice, id) => {
+  const handleCompleteRemarks = (choice, id) => {
     const remarks = cardState[id]?.remarks || '';
     if (choice === 'APPROVED') {
       towerApproval(id, 'APPROVED', remarks);
@@ -49,9 +49,9 @@ function AppListing() {
       towerApproval(id, 'REJECTED', remarks);
     }
     resetCardState(id);
-  }, [cardState]);
+  };
 
-  const handleSubmitRemarks = useCallback((id) => {
+  const handleSubmitRemarks = (id) => {
     const actionType = cardState[id]?.actionType;
     const remarks = cardState[id]?.remarks || '';
     switch (actionType) {
@@ -65,9 +65,9 @@ function AppListing() {
         break;
     }
     resetCardState(id);
-  }, [cardState]);
+  };
 
-  const handleInputChange = useCallback((event, id) => {
+  const handleInputChange = (event, id) => {
     const { value } = event.target;
     setCardState((prevState) => ({
       ...prevState,
@@ -76,9 +76,9 @@ function AppListing() {
         remarks: value,
       },
     }));
-  }, []);
+  };
 
-  const resetCardState = useCallback((id) => {
+  const resetCardState = (id) => {
     setCardState((prevState) => ({
       ...prevState,
       [id]: {
@@ -89,9 +89,9 @@ function AppListing() {
         isManagerFlow: false,
       },
     }));
-  }, []);
+  };
 
-  const App = React.memo(({ jsonData }) => {
+  const App = ({ jsonData }) => {
     const card = cardState[jsonData.id] || {};
     if (!jsonData || !jsonData.header) {
       return <div>Loading...</div>;
@@ -114,9 +114,9 @@ function AppListing() {
         />
       </div>
     );
-  });
+  };
 
-  const HeaderSection = React.memo(({ jsonData, handleActionClick }) => {
+  const HeaderSection = ({ jsonData, handleActionClick }) => {
     return (
       <div className="card-header">
         <h3>{Object.values(jsonData?.header).join(' | ')}</h3>
@@ -145,9 +145,9 @@ function AppListing() {
         </div>
       </div>
     );
-  });
+  };
 
-  const LabelChipsSection = React.memo(({ labelChips }) => {
+  const LabelChipsSection = ({ labelChips }) => {
     return (
       <div className="card-labelChips">
         <div className="chips-container">
@@ -159,9 +159,9 @@ function AppListing() {
         </div>
       </div>
     );
-  });
+  };
 
-  const BodySection = React.memo(({ body }) => {
+  const BodySection = ({ body }) => {
     return (
       <div className="card-body">
         {Object.keys(body).map((key) => (
@@ -174,9 +174,9 @@ function AppListing() {
         ))}
       </div>
     );
-  });
+  };
 
-  const FooterSection = React.memo(({
+  const FooterSection = ({
     jsonData,
     card,
     handleInputChange,
@@ -185,13 +185,13 @@ function AppListing() {
     resetCardState,
   }) => {
     const textareaRef = useRef(null);
-  
+
     useEffect(() => {
       if (card.showRemarksInput && textareaRef.current) {
         textareaRef.current.focus();
       }
     }, [card.showRemarksInput]);
-  
+
     return (
       <>
         <div className="card-footer">
@@ -248,8 +248,7 @@ function AppListing() {
         )}
       </>
     );
-  });
-  
+  };
 
   return (
     <>
