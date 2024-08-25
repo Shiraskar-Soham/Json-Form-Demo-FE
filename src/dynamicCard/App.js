@@ -41,8 +41,7 @@ function AppListing() {
     }));
   };
 
-  const handleCompleteRemarks = (choice, id) => {
-    const remarks = cardState[id]?.remarks || '';
+  const handleCompleteRemarks = (choice, id, remarks) => {
     if (choice === 'APPROVED') {
       towerApproval(id, 'APPROVED', remarks);
     } else {
@@ -51,9 +50,8 @@ function AppListing() {
     resetCardState(id);
   };
 
-  const handleSubmitRemarks = (id) => {
+  const handleSubmitRemarks = (id, remarks) => {
     const actionType = cardState[id]?.actionType;
-    const remarks = cardState[id]?.remarks || '';
     switch (actionType) {
       case 'REJECT':
         reject(id, remarks);
@@ -65,17 +63,6 @@ function AppListing() {
         break;
     }
     resetCardState(id);
-  };
-
-  const handleInputChange = (event, id) => {
-    const { value } = event.target;
-    setCardState((prevState) => ({
-      ...prevState,
-      [id]: {
-        ...prevState[id],
-        remarks: value,
-      },
-    }));
   };
 
   const resetCardState = (id) => {
@@ -211,7 +198,7 @@ function AppListing() {
               {card.isCTFlow && !card.isManagerFlow && (
                 <button
                   className="approveButton"
-                  onClick={() => handleCompleteRemarks('APPROVED', jsonData.id)}
+                  onClick={() => handleCompleteRemarks('APPROVED', jsonData.id, remarks)}
                 >
                   Approve
                 </button>
@@ -219,7 +206,7 @@ function AppListing() {
               {card.isCTFlow && !card.isManagerFlow && (
                 <button
                   className="completeButton"
-                  onClick={() => handleCompleteRemarks('REJECTED', jsonData.id)}
+                  onClick={() => handleCompleteRemarks('REJECTED', jsonData.id, remarks)}
                 >
                   Reject
                 </button>
@@ -227,7 +214,7 @@ function AppListing() {
               {card.isManagerFlow && !card.isCTFlow && (
                 <button
                   className="completeButton"
-                  onClick={() => handleSubmitRemarks(jsonData.id)}
+                  onClick={() => handleSubmitRemarks(jsonData.id, remarks)}
                 >
                   Submit
                 </button>
