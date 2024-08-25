@@ -6,13 +6,14 @@ import AccessRequestCompleted from './AccessRequestCompleted';
 import AccessRequestPending from './AccessRequestPending';
 import AccessRequestRejected from './AccessRequestRejected';
 import AccessRequestApproved from './AccessRequestApproved';
+import DynamicListing from '../dynamicCard/App';
 import NotFound from '../NotFound';
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<AccessRequestListing listingStatus="ALL" />} />
+        <Route path="/" element={<DynamicListing listingStatus="ALL" />} />
         <Route path="/allApproved" element={<AccessRequestApproved />} />
         <Route path="/allRejected" element={<AccessRequestRejected />} />
         <Route path="/allCompleted" element={<AccessRequestCompleted />} />

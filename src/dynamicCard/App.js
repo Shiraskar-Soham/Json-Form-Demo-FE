@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import ApiService from './Api.js';
 import './App.css';
 
@@ -39,6 +40,12 @@ function AppListing() {
         isManagerFlow: action !== 'COMPLETE',
       },
     }));
+  };
+
+  const navigate = useNavigate();
+
+  const handleButtonClick = () => {
+    navigate('/newRequest');
   };
 
   const handleCompleteRemarks = (choice, id, remarks) => {
@@ -165,17 +172,17 @@ function AppListing() {
   const FooterSection = ({ jsonData, card, handleCompleteRemarks, handleSubmitRemarks, resetCardState }) => {
     const [remarks, setRemarks] = useState('');
     const textareaRef = useRef(null);
-  
+
     useEffect(() => {
       if (textareaRef.current && remarks !== '') {
         textareaRef.current.focus();
       }
     }, [remarks]);
-  
+
     const handleInputChange = (event) => {
       setRemarks(event.target.value);
     };
-  
+
     return (
       <>
         <div className="card-footer">
@@ -234,8 +241,16 @@ function AppListing() {
 
   return (
     <>
-      <div className="pageHeader">
+      <div className='pageHeader'>
         <div>Access Request Listing</div>
+        <div><button className='newButton' onClick={handleButtonClick}>Raise New Request</button></div>
+        <div className='filterButtons'>
+          <button className='newButton' onClick={() => navigate('/')}>All</button>
+          <button className='newButton' onClick={() => navigate('/allPending')}>Pending</button>
+          <button className='newButton' onClick={() => navigate('/allRejected')}>Rejected</button>
+          <button className='newButton' onClick={() => navigate('/allApproved')}>Approved</button>
+          <button className='newButton' onClick={() => navigate('/allCompleted')}>Completed</button>
+        </div>
       </div>
       <div className="app-listing">
         {listingData.map((data) => (
