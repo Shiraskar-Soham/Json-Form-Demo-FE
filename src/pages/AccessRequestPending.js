@@ -1,6 +1,6 @@
 import React from 'react';
-import AccessRequestListing from '../accessRequestListing/App';
+import DynamicListing from "../dynamicCard/App"
 
 export default function AccessRequestPending() {
-    return <AccessRequestListing listingStatus="PENDING" />;
+    return <DynamicListing listingStatus="PENDING" />;
 }

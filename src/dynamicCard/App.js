@@ -15,19 +15,19 @@ function towerApproval(id, status, reviewRemarks) {
   ApiService.towerApproval(id, status, reviewRemarks);
 }
 
-function AppListing() {
+function DynamicListing({ listingStatus }) {
   const [listingData, setListingData] = useState([]);
   const [cardState, setCardState] = useState({});
 
   useEffect(() => {
-    ApiService.getListing()
+    ApiService.getListing(listingStatus)
       .then((responseData) => {
         setListingData(responseData);
       })
       .catch((error) => {
         console.error('Error in useEffect:', error);
       });
-  }, []);
+  }, [listingStatus]);
 
   const handleActionClick = (action, id) => {
     setCardState((prevState) => ({
@@ -261,4 +261,4 @@ function AppListing() {
   );
 }
 
-export default AppListing;
+export default DynamicListing;

@@ -1,6 +1,6 @@
 import React from "react";
-import AccessRequestListing from "../accessRequestListing/App";
+import DynamicListing from "../dynamicCard/App"
 
 export default function AccessRequestRejected() {
-    return <AccessRequestListing listingStatus="REJECTED" />;
+    return <DynamicListing listingStatus="REJECTED" />;
 }
