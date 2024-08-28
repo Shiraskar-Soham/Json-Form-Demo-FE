@@ -58,7 +58,7 @@
     }
 
     .approveButton {
-      background-color: #4CAF50;
+      background-color: #4caf50;
       color: white;
     }
 
@@ -67,7 +67,7 @@
     }
 
     .completeButton {
-      background-color: #008CBA;
+      background-color: #008cba;
       color: white;
     }
 
@@ -101,21 +101,21 @@
   flex-direction: column;
 
   .newButton {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-      background-color: #e6ab53;
-      color: white;
-      margin-top: 20px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    background-color: #e6ab53;
+    color: white;
+    margin-top: 20px;
   }
 
   .filterButtons {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
   }
 }
 .remarks-text {
@@ -127,5 +127,4 @@
   font-size: 16px;
   resize: vertical;
   box-sizing: border-box;
-
 }

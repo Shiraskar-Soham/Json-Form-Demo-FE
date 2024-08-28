@@ -1,7 +1,7 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import ApiService from './Api.js';
-import './App.css';
+import React, { useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import ApiService from "./Api.js";
+import "./App.css";
 
 function reject(id, reviewRemarks) {
   ApiService.reject(id, reviewRemarks);
@@ -25,7 +25,7 @@ function DynamicListing({ listingStatus }) {
         setListingData(responseData);
       })
       .catch((error) => {
-        console.error('Error in useEffect:', error);
+        console.error("Error in useEffect:", error);
       });
   }, [listingStatus]);
 
@@ -36,8 +36,8 @@ function DynamicListing({ listingStatus }) {
         ...prevState[id],
         actionType: action,
         showRemarksInput: true,
-        isCTFlow: action === 'COMPLETE',
-        isManagerFlow: action !== 'COMPLETE',
+        isCTFlow: action === "COMPLETE",
+        isManagerFlow: action !== "COMPLETE",
       },
     }));
   };
@@ -45,14 +45,14 @@ function DynamicListing({ listingStatus }) {
   const navigate = useNavigate();
 
   const handleButtonClick = () => {
-    navigate('/newRequest');
+    navigate("/newRequest");
   };
 
   const handleCompleteRemarks = (choice, id, remarks) => {
-    if (choice === 'APPROVED') {
-      towerApproval(id, 'APPROVED', remarks);
+    if (choice === "APPROVED") {
+      towerApproval(id, "APPROVED", remarks);
     } else {
-      towerApproval(id, 'REJECTED', remarks);
+      towerApproval(id, "REJECTED", remarks);
     }
     resetCardState(id);
   };
@@ -60,10 +60,10 @@ function DynamicListing({ listingStatus }) {
   const handleSubmitRemarks = (id, remarks) => {
     const actionType = cardState[id]?.actionType;
     switch (actionType) {
-      case 'REJECT':
+      case "REJECT":
         reject(id, remarks);
         break;
-      case 'APPROVE':
+      case "APPROVE":
         approve(id, remarks);
         break;
       default:
@@ -77,8 +77,8 @@ function DynamicListing({ listingStatus }) {
       ...prevState,
       [id]: {
         showRemarksInput: false,
-        remarks: '',
-        actionType: '',
+        remarks: "",
+        actionType: "",
         isCTFlow: false,
         isManagerFlow: false,
       },
@@ -111,8 +111,10 @@ function DynamicListing({ listingStatus }) {
 
   const HeaderSection = ({ jsonData, handleActionClick }) => {
     const headerValues = Object.values(jsonData?.header)
-      .map(value => typeof value === 'object' ? JSON.stringify(value) : value)
-      .join(' | ');
+      .map((value) =>
+        typeof value === "object" ? JSON.stringify(value) : value,
+      )
+      .join(" | ");
 
     return (
       <div className="card-header">
@@ -120,22 +122,22 @@ function DynamicListing({ listingStatus }) {
         <div className="approvalButtons">
           <button
             className="rejectButton"
-            onClick={() => handleActionClick('REJECT', jsonData.id)}
-            hidden={jsonData?.labelChips['Manager Status'] !== 'PENDING'}
+            onClick={() => handleActionClick("REJECT", jsonData.id)}
+            hidden={jsonData?.labelChips["Manager Status"] !== "PENDING"}
           >
             Reject
           </button>
           <button
             className="approveButton"
-            onClick={() => handleActionClick('APPROVE', jsonData.id)}
-            hidden={jsonData?.labelChips['Manager Status'] !== 'PENDING'}
+            onClick={() => handleActionClick("APPROVE", jsonData.id)}
+            hidden={jsonData?.labelChips["Manager Status"] !== "PENDING"}
           >
             Approve
           </button>
           <button
             className="completeButton"
-            onClick={() => handleActionClick('COMPLETE', jsonData.id)}
-            hidden={jsonData?.labelChips['Control Tower Status'] !== 'PENDING'}
+            onClick={() => handleActionClick("COMPLETE", jsonData.id)}
+            hidden={jsonData?.labelChips["Control Tower Status"] !== "PENDING"}
           >
             Mark As Completed
           </button>
@@ -164,11 +166,16 @@ function DynamicListing({ listingStatus }) {
         {Object.keys(body).map((key) => (
           <div key={key}>
             <span className="module-chips">
-              <strong>{key}{': '}</strong>
-              {typeof body[key] === 'object' && body[key] !== null ? (
+              <strong>
+                {key}
+                {": "}
+              </strong>
+              {typeof body[key] === "object" && body[key] !== null ? (
                 <ul>
                   {Object.keys(body[key]).map((subKey) => (
-                    <li key={subKey}>{subKey}: {body[key][subKey]}</li>
+                    <li key={subKey}>
+                      {subKey}: {body[key][subKey]}
+                    </li>
                   ))}
                 </ul>
               ) : (
@@ -181,12 +188,18 @@ function DynamicListing({ listingStatus }) {
     );
   };
 
-  const FooterSection = ({ footer, card, handleCompleteRemarks, handleSubmitRemarks, resetCardState }) => {
-    const [remarks, setRemarks] = useState('');
+  const FooterSection = ({
+    footer,
+    card,
+    handleCompleteRemarks,
+    handleSubmitRemarks,
+    resetCardState,
+  }) => {
+    const [remarks, setRemarks] = useState("");
     const textareaRef = useRef(null);
 
     useEffect(() => {
-      if (textareaRef.current && remarks !== '') {
+      if (textareaRef.current && remarks !== "") {
         textareaRef.current.focus();
       }
     }, [remarks]);
@@ -200,7 +213,8 @@ function DynamicListing({ listingStatus }) {
         <div className="card-footer">
           {Object.keys(footer).map((key) => (
             <span key={key}>
-              <strong>{key}:</strong> {footer[key]}{'   '}{' '}
+              <strong>{key}:</strong> {footer[key]}
+              {"   "}{" "}
             </span>
           ))}
         </div>
@@ -217,7 +231,9 @@ function DynamicListing({ listingStatus }) {
               {card.isCTFlow && !card.isManagerFlow && (
                 <button
                   className="approveButton"
-                  onClick={() => handleCompleteRemarks('APPROVED', footer.id, remarks)}
+                  onClick={() =>
+                    handleCompleteRemarks("APPROVED", footer.id, remarks)
+                  }
                 >
                   Approve
                 </button>
@@ -225,7 +241,9 @@ function DynamicListing({ listingStatus }) {
               {card.isCTFlow && !card.isManagerFlow && (
                 <button
                   className="completeButton"
-                  onClick={() => handleCompleteRemarks('REJECTED', footer.id, remarks)}
+                  onClick={() =>
+                    handleCompleteRemarks("REJECTED", footer.id, remarks)
+                  }
                 >
                   Reject
                 </button>
@@ -253,15 +271,38 @@ function DynamicListing({ listingStatus }) {
 
   return (
     <>
-      <div className='pageHeader'>
+      <div className="pageHeader">
         <div>Access Request Listing</div>
-        <div><button className='newButton' onClick={handleButtonClick}>Raise New Request</button></div>
-        <div className='filterButtons'>
-          <button className='newButton' onClick={() => navigate('/')}>All</button>
-          <button className='newButton' onClick={() => navigate('/allPending')}>Pending</button>
-          <button className='newButton' onClick={() => navigate('/allRejected')}>Rejected</button>
-          <button className='newButton' onClick={() => navigate('/allApproved')}>Approved</button>
-          <button className='newButton' onClick={() => navigate('/allCompleted')}>Completed</button>
+        <div>
+          <button className="newButton" onClick={handleButtonClick}>
+            Raise New Request
+          </button>
+        </div>
+        <div className="filterButtons">
+          <button className="newButton" onClick={() => navigate("/")}>
+            All
+          </button>
+          <button className="newButton" onClick={() => navigate("/allPending")}>
+            Pending
+          </button>
+          <button
+            className="newButton"
+            onClick={() => navigate("/allRejected")}
+          >
+            Rejected
+          </button>
+          <button
+            className="newButton"
+            onClick={() => navigate("/allApproved")}
+          >
+            Approved
+          </button>
+          <button
+            className="newButton"
+            onClick={() => navigate("/allCompleted")}
+          >
+            Completed
+          </button>
         </div>
       </div>
       <div className="app-listing">

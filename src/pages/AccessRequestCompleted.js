@@ -1,6 +1,6 @@
 import React from "react";
-import DynamicListing from "../dynamicCard/App"
+import DynamicListing from "../dynamicCard/App";
 
 export default function AccessRequestCompleted() {
-    return <DynamicListing listingStatus="COMPLETED" />;
+  return <DynamicListing listingStatus="COMPLETED" />;
 }

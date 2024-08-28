@@ -1,12 +1,12 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import AccessRequestForm from '../accessRequestForm/App';
-import AccessRequestCompleted from './AccessRequestCompleted';
-import AccessRequestPending from './AccessRequestPending';
-import AccessRequestRejected from './AccessRequestRejected';
-import AccessRequestApproved from './AccessRequestApproved';
-import DynamicListing from '../dynamicCard/App';
-import NotFound from '../NotFound';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import AccessRequestForm from "../accessRequestForm/App";
+import AccessRequestCompleted from "./AccessRequestCompleted";
+import AccessRequestPending from "./AccessRequestPending";
+import AccessRequestRejected from "./AccessRequestRejected";
+import AccessRequestApproved from "./AccessRequestApproved";
+import DynamicListing from "../dynamicCard/App";
+import NotFound from "../NotFound";
 
 function App() {
   return (

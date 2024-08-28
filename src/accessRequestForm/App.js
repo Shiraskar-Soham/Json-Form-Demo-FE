@@ -1,9 +1,9 @@
-import './App.css';
-import Form from '@rjsf/mui';
-import validator from '@rjsf/validator-ajv8';
-import { useEffect, useState } from 'react';
-import ApiService from './Api';
-import { useNavigate } from 'react-router-dom';
+import "./App.css";
+import Form from "@rjsf/mui";
+import validator from "@rjsf/validator-ajv8";
+import { useEffect, useState } from "react";
+import ApiService from "./Api";
+import { useNavigate } from "react-router-dom";
 
 function AccessRequestForm() {
   const [companyNames, setCompanyNames] = useState([]);
@@ -13,106 +13,106 @@ function AccessRequestForm() {
   const [modulesSchema, setModulesSchema] = useState({});
 
   const baseSchema = {
-    "title": "Request For Access",
-    "type": "object",
-    "properties": {
-      "approvingManager": {
-        "title": "Select Your Manager/HOD",
-        "type": "string",
-        "enum": []
+    title: "Request For Access",
+    type: "object",
+    properties: {
+      approvingManager: {
+        title: "Select Your Manager/HOD",
+        type: "string",
+        enum: [],
       },
-      "company": {
-        "title": "Company Application (in which access is needed)",
-        "type": "string",
-        "enumNames": [],
-        "enum": []
+      company: {
+        title: "Company Application (in which access is needed)",
+        type: "string",
+        enumNames: [],
+        enum: [],
       },
-      "modules": {
-        "title": "Modules",
-        "type": "object",
-        "properties": {}
+      modules: {
+        title: "Modules",
+        type: "object",
+        properties: {},
       },
-      "remarks": {
-        "title": "Remarks",
-        "type": "string"
-      }
+      remarks: {
+        title: "Remarks",
+        type: "string",
+      },
     },
-    "required": ["approvingManager", "company", "modules", "remarks"]
+    required: ["approvingManager", "company", "modules", "remarks"],
   };
 
   const uiSchema = {
-    "approvingManager": {
+    approvingManager: {
       "ui:autofocus": true,
       "ui:enableMarkdownInDescription": true,
-      "ui:description": "*Select the manager who would approve your request.*"
+      "ui:description": "*Select the manager who would approve your request.*",
     },
-    "company": {
+    company: {
       "ui:autofocus": true,
       "ui:enableMarkdownInDescription": true,
-      "ui:description": "*Select the company you want access to*"
+      "ui:description": "*Select the company you want access to*",
     },
-    "remarks": {
+    remarks: {
       "ui:autofocus": true,
       "ui:enableMarkdownInDescription": true,
-      "ui:description": "Please enter *appropriate* remarks."
+      "ui:description": "Please enter *appropriate* remarks.",
     },
-    "modules": {
-      "OASYS": {
+    modules: {
+      OASYS: {
         "ui:description": "Select the modules you want access to.",
         "ui:enableMarkdownInDescription": true,
-        "ui:widget": "select"
+        "ui:widget": "select",
       },
-      "OFB_SALES_SYSTEM": {
+      OFB_SALES_SYSTEM: {
         "ui:description": "Select the modules you want access to.",
         "ui:enableMarkdownInDescription": true,
-        "ui:widget": "select"
+        "ui:widget": "select",
       },
-      "ORION": {
+      ORION: {
         "ui:description": "Select the modules you want access to.",
         "ui:enableMarkdownInDescription": true,
-        "ui:widget": "select"
+        "ui:widget": "select",
       },
-      "PRISM": {
+      PRISM: {
         "ui:description": "Select the modules you want access to.",
         "ui:enableMarkdownInDescription": true,
-        "ui:widget": "select"
+        "ui:widget": "select",
       },
-      "CERES": {
+      CERES: {
         "ui:description": "Select the modules you want access to.",
         "ui:enableMarkdownInDescription": true,
-        "ui:widget": "select"
+        "ui:widget": "select",
       },
-      "OXYZO": {
+      OXYZO: {
         "ui:description": "Select the modules you want access to.",
         "ui:enableMarkdownInDescription": true,
-        "ui:widget": "select"
+        "ui:widget": "select",
       },
-      "OMAT": {
+      OMAT: {
         "ui:description": "Select the modules you want access to.",
         "ui:enableMarkdownInDescription": true,
-        "ui:widget": "select"
+        "ui:widget": "select",
       },
-      "OXYZO_SALES_SYSTEM": {
+      OXYZO_SALES_SYSTEM: {
         "ui:description": "Select the modules you want access to.",
         "ui:enableMarkdownInDescription": true,
-        "ui:widget": "select"
+        "ui:widget": "select",
       },
-      "OAGRIFARMLOAN": {
+      OAGRIFARMLOAN: {
         "ui:description": "Select the modules you want access to.",
         "ui:enableMarkdownInDescription": true,
-        "ui:widget": "select"
+        "ui:widget": "select",
       },
-      "OCEAN": {
+      OCEAN: {
         "ui:description": "Select the modules you want access to.",
         "ui:enableMarkdownInDescription": true,
-        "ui:widget": "select"
+        "ui:widget": "select",
       },
-      "OMAT_FINANCE": {
+      OMAT_FINANCE: {
         "ui:description": "Select the modules you want access to.",
         "ui:enableMarkdownInDescription": true,
-        "ui:widget": "select"
-      }
-    }
+        "ui:widget": "select",
+      },
+    },
   };
 
   useEffect(() => {
@@ -135,25 +135,27 @@ function AccessRequestForm() {
 
         for (const system of systems) {
           const { enumName, displayName } = system;
-          const { displayNames } = await ApiService.getModules(company, enumName);
+          const { displayNames } = await ApiService.getModules(
+            company,
+            enumName,
+          );
 
           newModulesSchema[enumName] = {
-            "title": `${displayName} Modules`,
-            "type": "array",
-            "items": {
-              "enum": displayNames,
-              "type": "string"
+            title: `${displayName} Modules`,
+            type: "array",
+            items: {
+              enum: displayNames,
+              type: "string",
             },
-            "uniqueItems": true,
-            "required": ["$enumName"]
+            uniqueItems: true,
+            required: ["$enumName"],
           };
         }
         setModulesSchema(newModulesSchema);
       } else {
-        setModulesSchema({})
+        setModulesSchema({});
       }
     };
-
 
     updateModulesSchema();
   }, [data?.company]);
@@ -164,32 +166,32 @@ function AccessRequestForm() {
       ...baseSchema.properties,
       approvingManager: {
         ...baseSchema.properties.approvingManager,
-        enum: Object.values(managerDisplayNames)
+        enum: Object.values(managerDisplayNames),
       },
       company: {
         ...baseSchema.properties.company,
         enumNames: companyDisplayNames,
-        enum: companyNames
+        enum: companyNames,
       },
       modules: {
         ...baseSchema.properties.modules,
-        properties: modulesSchema
-      }
-    }
+        properties: modulesSchema,
+      },
+    },
   };
 
   const navigate = useNavigate();
-  
+
   const onSubmit = ({ formData, errors }) => {
     ApiService.submitForm(formData)
       .then((responseData) => {
         const entryID = responseData;
         alert(`Form Submitted Successfully! Your request Id is "${entryID}".`);
         setData({});
-        navigate('/allPending');
+        navigate("/allPending");
       })
       .catch((error) => {
-        console.error('Form submission failed:', error);
+        console.error("Form submission failed:", error);
       });
   };
   const onChange = ({ formData }) => {
@@ -198,7 +200,6 @@ function AccessRequestForm() {
     }
     setData(formData);
   };
-
 
   // const validate = (formData, errors) => {
   //   if (formData.company && Object.keys(modulesSchema).length > 0) {
@@ -221,7 +222,7 @@ function AccessRequestForm() {
   const log = (type) => console.log.bind(console, type);
 
   return (
-    <div className='Parent'>
+    <div className="Parent">
       <Form
         schema={schema}
         uiSchema={uiSchema}
@@ -229,9 +230,9 @@ function AccessRequestForm() {
         validator={validator}
         onChange={onChange}
         onSubmit={onSubmit}
-        showErrorList='top'
-        onError={log('errors')}
-      // validate={validate}
+        showErrorList="top"
+        onError={log("errors")}
+        // validate={validate}
       />
     </div>
   );
