@@ -3,6 +3,7 @@ import Form from '@rjsf/mui';
 import validator from '@rjsf/validator-ajv8';
 import { useEffect, useState } from 'react';
 import ApiService from './Api';
+import { useNavigate } from 'react-router-dom';
 
 function AccessRequestForm() {
   const [companyNames, setCompanyNames] = useState([]);
@@ -178,6 +179,8 @@ function AccessRequestForm() {
     }
   };
 
+  const navigate = useNavigate();
+  
   const onSubmit = ({ formData, errors }) => {
     ApiService.submitForm(formData)
       .then((responseData) => {
@@ -185,6 +188,7 @@ function AccessRequestForm() {
         alert(`Form Submitted Successfully! Your request Id is "${entryID}".`);
         setData({});
         setBackendError('');
+        navigate('/allPending');  // Redirect to /allPending after successful submission
       })
       .catch((error) => {
         console.error('Form submission failed:', error);
