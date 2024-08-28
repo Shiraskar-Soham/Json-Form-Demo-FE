@@ -35,6 +35,7 @@ const ApiService = {
       })
       .then((data) => {
         const displayNames = Object.values(data);
+        window.location.reload();
         return { displayNames };
       })
       .catch((error) => {
@@ -60,6 +61,7 @@ const ApiService = {
       })
       .then((data) => {
         const displayNames = Object.values(data);
+        window.location.reload();
         return { displayNames };
       })
       .catch((error) => {
@@ -85,6 +87,7 @@ const ApiService = {
       })
       .then((data) => {
         const displayNames = Object.values(data);
+        window.location.reload();
         return { displayNames };
       })
       .catch((error) => {
