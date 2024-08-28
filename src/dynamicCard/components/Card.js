@@ -74,7 +74,7 @@ const Card = ({ jsonData }) => {
       <LabelChipsSection labelChips={jsonData.labelChips} />
       <BodySection body={jsonData.body} />
       <FooterSection
-        footer={jsonData.footer}
+        jsonData={jsonData}
         card={card}
         handleCompleteRemarks={handleCompleteRemarks}
         handleSubmitRemarks={handleSubmitRemarks}

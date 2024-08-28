@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 
 const FooterSection = ({
-  footer,
+  jsonData,
   card,
   handleCompleteRemarks,
   handleSubmitRemarks,
@@ -21,15 +21,15 @@ const FooterSection = ({
   };
 
   const handleCancel = () => {
-    resetCardState(footer.id);
+    resetCardState(jsonData.id);
   };
 
   return (
     <>
       <div className="card-footer">
-        {Object.keys(footer).map((key) => (
+        {Object.keys(jsonData.footer).map((key) => (
           <span key={key}>
-            <strong>{key}:</strong> {footer[key]}
+            <strong>{key}:</strong> {jsonData.footer[key]}
             {"   "}{" "}
           </span>
         ))}
@@ -49,7 +49,7 @@ const FooterSection = ({
                 <button
                   className="approveButton"
                   onClick={() =>
-                    handleCompleteRemarks("APPROVED", footer.id, remarks)
+                    handleCompleteRemarks("APPROVED", jsonData.id, remarks)
                   }
                 >
                   Approve
@@ -57,7 +57,7 @@ const FooterSection = ({
                 <button
                   className="completeButton"
                   onClick={() =>
-                    handleCompleteRemarks("REJECTED", footer.id, remarks)
+                    handleCompleteRemarks("REJECTED", jsonData.id, remarks)
                   }
                 >
                   Reject
@@ -67,7 +67,7 @@ const FooterSection = ({
             {card.isManagerFlow && !card.isCTFlow && (
               <button
                 className="completeButton"
-                onClick={() => handleSubmitRemarks(footer.id, remarks)}
+                onClick={() => handleSubmitRemarks(jsonData.id, remarks)}
               >
                 Submit
               </button>
