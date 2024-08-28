@@ -174,7 +174,7 @@ function DynamicListing({ listingStatus }) {
                 <ul>
                   {Object.keys(body[key]).map((subKey) => (
                     <li key={subKey}>
-                      {subKey}: {body[key][subKey]}
+                      {subKey}: {body[key][subKey].join(", ")}
                     </li>
                   ))}
                 </ul>
