@@ -11,7 +11,6 @@ function AccessRequestForm() {
   const [data, setData] = useState({});
   const [managerDisplayNames, setManagerDisplayNames] = useState({});
   const [modulesSchema, setModulesSchema] = useState({});
-  const [backendError, setBackendError] = useState({})
 
   const baseSchema = {
     "title": "Request For Access",
@@ -187,12 +186,10 @@ function AccessRequestForm() {
         const entryID = responseData;
         alert(`Form Submitted Successfully! Your request Id is "${entryID}".`);
         setData({});
-        setBackendError('');
-        navigate('/allPending');  // Redirect to /allPending after successful submission
+        navigate('/allPending');
       })
       .catch((error) => {
         console.error('Form submission failed:', error);
-        setBackendError(error.message || 'Form submission failed!');
       });
   };
   const onChange = ({ formData }) => {
