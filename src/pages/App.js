@@ -5,7 +5,7 @@ import AccessRequestCompleted from "./AccessRequestCompleted";
 import AccessRequestPending from "./AccessRequestPending";
 import AccessRequestRejected from "./AccessRequestRejected";
 import AccessRequestApproved from "./AccessRequestApproved";
-import DynamicListing from "../dynamicCard/App";
+import DynamicListing from "../dynamicCard/DynamicListing";
 import NotFound from "../NotFound";
 
 function App() {
