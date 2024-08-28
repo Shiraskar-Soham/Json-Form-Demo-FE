@@ -99,7 +99,7 @@ function DynamicListing({ listingStatus }) {
         <LabelChipsSection labelChips={jsonData.labelChips} />
         <BodySection body={jsonData.body} />
         <FooterSection
-          jsonData={jsonData}
+          footer={jsonData.footer}
           card={card}
           handleCompleteRemarks={handleCompleteRemarks}
           handleSubmitRemarks={handleSubmitRemarks}
@@ -110,9 +110,13 @@ function DynamicListing({ listingStatus }) {
   };
 
   const HeaderSection = ({ jsonData, handleActionClick }) => {
+    const headerValues = Object.values(jsonData?.header)
+      .map(value => typeof value === 'object' ? JSON.stringify(value) : value)
+      .join(' | ');
+
     return (
       <div className="card-header">
-        <h3>{Object.values(jsonData?.header).join(' | ')}</h3>
+        <h3>{headerValues}</h3>
         <div className="approvalButtons">
           <button
             className="rejectButton"
@@ -161,7 +165,15 @@ function DynamicListing({ listingStatus }) {
           <div key={key}>
             <span className="module-chips">
               <strong>{key}{': '}</strong>
-              {body[key].join(', ')}
+              {typeof body[key] === 'object' && body[key] !== null ? (
+                <ul>
+                  {Object.keys(body[key]).map((subKey) => (
+                    <li key={subKey}>{subKey}: {body[key][subKey]}</li>
+                  ))}
+                </ul>
+              ) : (
+                body[key]
+              )}
             </span>
           </div>
         ))}
@@ -169,7 +181,7 @@ function DynamicListing({ listingStatus }) {
     );
   };
 
-  const FooterSection = ({ jsonData, card, handleCompleteRemarks, handleSubmitRemarks, resetCardState }) => {
+  const FooterSection = ({ footer, card, handleCompleteRemarks, handleSubmitRemarks, resetCardState }) => {
     const [remarks, setRemarks] = useState('');
     const textareaRef = useRef(null);
 
@@ -186,9 +198,9 @@ function DynamicListing({ listingStatus }) {
     return (
       <>
         <div className="card-footer">
-          {Object.keys(jsonData?.footer).map((key) => (
+          {Object.keys(footer).map((key) => (
             <span key={key}>
-              <strong>{key}:</strong> {jsonData?.footer[key]}{'   '}{' '}
+              <strong>{key}:</strong> {footer[key]}{'   '}{' '}
             </span>
           ))}
         </div>
@@ -205,7 +217,7 @@ function DynamicListing({ listingStatus }) {
               {card.isCTFlow && !card.isManagerFlow && (
                 <button
                   className="approveButton"
-                  onClick={() => handleCompleteRemarks('APPROVED', jsonData.id, remarks)}
+                  onClick={() => handleCompleteRemarks('APPROVED', footer.id, remarks)}
                 >
                   Approve
                 </button>
@@ -213,7 +225,7 @@ function DynamicListing({ listingStatus }) {
               {card.isCTFlow && !card.isManagerFlow && (
                 <button
                   className="completeButton"
-                  onClick={() => handleCompleteRemarks('REJECTED', jsonData.id, remarks)}
+                  onClick={() => handleCompleteRemarks('REJECTED', footer.id, remarks)}
                 >
                   Reject
                 </button>
@@ -221,14 +233,14 @@ function DynamicListing({ listingStatus }) {
               {card.isManagerFlow && !card.isCTFlow && (
                 <button
                   className="completeButton"
-                  onClick={() => handleSubmitRemarks(jsonData.id, remarks)}
+                  onClick={() => handleSubmitRemarks(footer.id, remarks)}
                 >
                   Submit
                 </button>
               )}
               <button
                 className="rejectButton"
-                onClick={() => resetCardState(jsonData.id)}
+                onClick={() => resetCardState(footer.id)}
               >
                 Cancel
               </button>
@@ -254,7 +266,7 @@ function DynamicListing({ listingStatus }) {
       </div>
       <div className="app-listing">
         {listingData.map((data) => (
-          <App key={data.id} jsonData={data} />
+          <App jsonData={data} />
         ))}
       </div>
     </>
