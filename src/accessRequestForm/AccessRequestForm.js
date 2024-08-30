@@ -2,188 +2,94 @@ import "./App.css";
 import Form from "@rjsf/mui";
 import validator from "@rjsf/validator-ajv8";
 import { useEffect, useState } from "react";
-import ApiService from "./Api";
 import { useNavigate } from "react-router-dom";
 
-function AccessRequestForm() {
-  const [companyNames, setCompanyNames] = useState([]);
-  const [companyDisplayNames, setCompanyDisplayNames] = useState([]);
+function AccessRequestForm({ formId }) {
+  const [formMetadata, setFormMetadata] = useState(null);
+  const [baseSchema, setBaseSchema] = useState(null);
+  const [uiSchema, setUiSchema] = useState(null);
   const [data, setData] = useState({});
-  const [managerDisplayNames, setManagerDisplayNames] = useState({});
-  const [modulesSchema, setModulesSchema] = useState({});
-
-  const baseSchema = {
-    title: "Request For Access",
-    type: "object",
-    properties: {
-      approvingManager: {
-        title: "Select Your Manager/HOD",
-        type: "string",
-        enum: [],
-      },
-      company: {
-        title: "Company Application (in which access is needed)",
-        type: "string",
-        enumNames: [],
-        enum: [],
-      },
-      modules: {
-        title: "Modules",
-        type: "object",
-        properties: {},
-      },
-      remarks: {
-        title: "Remarks",
-        type: "string",
-      },
-    },
-    required: ["approvingManager", "company", "modules", "remarks"],
-  };
-
-  const uiSchema = {
-    approvingManager: {
-      "ui:autofocus": true,
-      "ui:enableMarkdownInDescription": true,
-      "ui:description": "*Select the manager who would approve your request.*",
-    },
-    company: {
-      "ui:autofocus": true,
-      "ui:enableMarkdownInDescription": true,
-      "ui:description": "*Select the company you want access to*",
-    },
-    remarks: {
-      "ui:autofocus": true,
-      "ui:enableMarkdownInDescription": true,
-      "ui:description": "Please enter *appropriate* remarks.",
-    },
-    modules: {
-      OASYS: {
-        "ui:description": "Select the modules you want access to.",
-        "ui:enableMarkdownInDescription": true,
-        "ui:widget": "select",
-      },
-      OFB_SALES_SYSTEM: {
-        "ui:description": "Select the modules you want access to.",
-        "ui:enableMarkdownInDescription": true,
-        "ui:widget": "select",
-      },
-      ORION: {
-        "ui:description": "Select the modules you want access to.",
-        "ui:enableMarkdownInDescription": true,
-        "ui:widget": "select",
-      },
-      PRISM: {
-        "ui:description": "Select the modules you want access to.",
-        "ui:enableMarkdownInDescription": true,
-        "ui:widget": "select",
-      },
-      CERES: {
-        "ui:description": "Select the modules you want access to.",
-        "ui:enableMarkdownInDescription": true,
-        "ui:widget": "select",
-      },
-      OXYZO: {
-        "ui:description": "Select the modules you want access to.",
-        "ui:enableMarkdownInDescription": true,
-        "ui:widget": "select",
-      },
-      OMAT: {
-        "ui:description": "Select the modules you want access to.",
-        "ui:enableMarkdownInDescription": true,
-        "ui:widget": "select",
-      },
-      OXYZO_SALES_SYSTEM: {
-        "ui:description": "Select the modules you want access to.",
-        "ui:enableMarkdownInDescription": true,
-        "ui:widget": "select",
-      },
-      OAGRIFARMLOAN: {
-        "ui:description": "Select the modules you want access to.",
-        "ui:enableMarkdownInDescription": true,
-        "ui:widget": "select",
-      },
-      OCEAN: {
-        "ui:description": "Select the modules you want access to.",
-        "ui:enableMarkdownInDescription": true,
-        "ui:widget": "select",
-      },
-      OMAT_FINANCE: {
-        "ui:description": "Select the modules you want access to.",
-        "ui:enableMarkdownInDescription": true,
-        "ui:widget": "select",
-      },
-    },
-  };
-
-  useEffect(() => {
-    ApiService.getCompany().then(({ companyNames, companyDisplayNames }) => {
-      setCompanyNames(companyNames);
-      setCompanyDisplayNames(companyDisplayNames);
-    });
-
-    ApiService.getManager().then(({ managerDisplayNames }) => {
-      setManagerDisplayNames(managerDisplayNames);
-    });
-  }, []);
-
-  useEffect(() => {
-    const updateModulesSchema = async () => {
-      const company = data?.company;
-      if (company) {
-        const systems = await ApiService.getSystems(company);
-        const newModulesSchema = {};
-
-        for (const system of systems) {
-          const { enumName, displayName } = system;
-          const { displayNames } = await ApiService.getModules(
-            company,
-            enumName,
-          );
-
-          newModulesSchema[enumName] = {
-            title: `${displayName} Modules`,
-            type: "array",
-            items: {
-              enum: displayNames,
-              type: "string",
-            },
-            uniqueItems: true,
-            required: ["$enumName"],
-          };
-        }
-        setModulesSchema(newModulesSchema);
-      } else {
-        setModulesSchema({});
-      }
-    };
-
-    updateModulesSchema();
-  }, [data?.company]);
-
-  const schema = {
-    ...baseSchema,
-    properties: {
-      ...baseSchema.properties,
-      approvingManager: {
-        ...baseSchema.properties.approvingManager,
-        enum: Object.values(managerDisplayNames),
-      },
-      company: {
-        ...baseSchema.properties.company,
-        enumNames: companyDisplayNames,
-        enum: companyNames,
-      },
-      modules: {
-        ...baseSchema.properties.modules,
-        properties: modulesSchema,
-      },
-    },
-  };
-
   const navigate = useNavigate();
 
-  const onSubmit = ({ formData, errors }) => {
-    ApiService.submitForm(formData)
+  // Meta data from backend
+  useEffect(() => {
+    fetch(`http://localhost:8081/api/forms/2/metadata`)
+      .then((response) => response.json())
+      .then((data) => setFormMetadata(data))
+      .catch((error) => console.error('Error fetching form metadata:', error));
+  }, [formId]);
+
+  // Step 2: schema
+  useEffect(() => {
+    if (formMetadata) {
+      const properties = {};
+      const requiredFields = [];
+
+      formMetadata.fields.forEach((field) => {
+        properties[field.field_id] = {
+          title: field.label,
+          type: field.fieldType === 'textarea' || 'text' ? 'string' : field.fieldType,
+        };
+
+        if (field.fieldType === "select" || field.fieldType === "multiselect") {
+          const options = JSON.parse(field.options);
+          properties[field.field_id].enum = options.map((option) => option.value);
+          properties[field.field_id].enumNames = options.map((option) => option.label);
+          if (field.fieldType === "select") {
+            properties[field.field_id].type = "array";
+            properties[field.field_id].items = {
+              type: "string",
+              enum: options.map((option) => option.value),
+              enumNames: options.map((option) => option.label),
+            };
+            properties[field.field_id].uniqueItems = true;
+          }
+        }
+        if (field.required === "true") {
+          requiredFields.push(field.field_id);
+        }
+      });
+      const schema = {
+        title: formMetadata.form_name,
+        type: "object",
+        properties,
+        required: requiredFields,
+      };
+      setBaseSchema(schema);
+    }
+  }, [formMetadata]);
+
+  // uischema
+  useEffect(() => {
+    if (formMetadata) {
+      const uiSchema = {};
+
+      formMetadata.fields.forEach((field) => {
+        uiSchema[field.field_id] = {
+          "ui:autofocus": true,
+          "ui:enableMarkdownInDescription": true,
+          "ui:description": `*${field.label} description here.*`, // Customize as needed
+        };
+
+        if (field.fieldType === "select" || field.fieldType === "dropdown"|| field.fieldType==="multiselect") {
+          uiSchema[field.field_id]["ui:widget"] = "select";
+        }
+      });
+
+      setUiSchema(uiSchema);
+    }
+  }, [formMetadata]);
+
+  // submitting form
+  const onSubmit = ({ formData }) => {
+    fetch("http://localhost:8081/api/forms/3/submissions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(2, formData),
+    })
+      .then((response) => response.json())
       .then((responseData) => {
         const entryID = responseData;
         alert(`Form Submitted Successfully! Your request Id is "${entryID}".`);
@@ -194,46 +100,30 @@ function AccessRequestForm() {
         console.error("Form submission failed:", error);
       });
   };
+
+
   const onChange = ({ formData }) => {
-    if (formData?.company !== data?.company) {
-      formData.modules = {};
-    }
     setData(formData);
   };
 
-  // const validate = (formData, errors) => {
-  //   if (formData.company && Object.keys(modulesSchema).length > 0) {
-  //     let atLeastOneModuleSelected = false;
-
-  //     for (const module in formData.modules) {
-  //       if (formData.modules[module].length > 0) {
-  //         atLeastOneModuleSelected = true;
-  //         break;
-  //       }
-  //     }
-
-  //     if (!atLeastOneModuleSelected) {
-  //       errors.modules.addError('At least one module must be selected.');
-  //     }
-  //   }
-  //   return errors;
-  // };
 
   const log = (type) => console.log.bind(console, type);
 
+
   return (
     <div className="Parent">
-      <Form
-        schema={schema}
-        uiSchema={uiSchema}
-        formData={data}
-        validator={validator}
-        onChange={onChange}
-        onSubmit={onSubmit}
-        showErrorList="top"
-        onError={log("errors")}
-        // validate={validate}
-      />
+      {baseSchema && uiSchema && (
+        <Form
+          schema={baseSchema}
+          uiSchema={uiSchema}
+          formData={data}
+          validator={validator}
+          onChange={onChange}
+          onSubmit={onSubmit}
+          showErrorList="top"
+          onError={log("errors")}
+        />
+      )}
     </div>
   );
 }
